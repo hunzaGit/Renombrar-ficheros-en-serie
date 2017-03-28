@@ -1,9 +1,12 @@
 package Presentacion;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
@@ -16,14 +19,17 @@ import java.io.File;
 import java.text.ParseException;
 
 import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 
 import Negocio.Negocio;
@@ -41,6 +47,9 @@ public class VentanaPrincipal extends JFrame {
 	private JTextField textFieldDirectorio;
 	private JPanel panelDirectorio;
 	private JPanel panelDatos;
+	
+	private JLabel labelSeparadorPalabras;
+	private JTextField textFieldSeparadorPalabras;
 	private JLabel labelTamSerie;
 	private JTextField textFieldTamNombreSerie;
 	private JLabel labelCalidad;
@@ -84,15 +93,35 @@ public class VentanaPrincipal extends JFrame {
 				.createTitledBorder("Directorio"));
 		textFieldDirectorio = new JTextField(45);
 
-		panelDirectorio.add(textFieldDirectorio);
+		/*JFileChooser chooser = new JFileChooser();
+	    chooser.setCurrentDirectory(new java.io.File("."));
+	    chooser.setDialogTitle("choosertitle");
+	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	    chooser.setAcceptAllFileFilterUsed(false);
 
-		// Panel de datos necesarios
+	    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+	      System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+	      System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+	    } else {
+	      System.out.println("No Selection ");
+	    }
+		
+		
+		panelDirectorio.add(chooser);
+		*/
+
+		panelDirectorio.add(textFieldDirectorio);
+		
+		// Panel de datos necesario		
 		panelDatos = new JPanel();
 		panelDatos.setBorder(BorderFactory.createTitledBorder("Datos"));
+		
+		labelSeparadorPalabras = new JLabel("Separador de palabras");
+		textFieldSeparadorPalabras = new JTextField(tamTextFieldStandar);
 
 		labelTamSerie = new JLabel("Tam primer nombre");
 		textFieldTamNombreSerie = new JTextField(tamTextFieldStandar);
-
+		
 		labelCalidad = new JLabel("Calidad: ");
 		textFielCalidad = new JTextField("1080p", tamTextFieldStandar);
 
@@ -102,6 +131,9 @@ public class VentanaPrincipal extends JFrame {
 		labelIndicadorFinal = new JLabel("Indicador de final: ");
 		textFieldIndicadorFinal = new JTextField(tamTextFieldStandar);
 
+		panelDatos.add(labelSeparadorPalabras);
+		panelDatos.add(textFieldSeparadorPalabras);
+		
 		panelDatos.add(labelTamSerie);
 		panelDatos.add(textFieldTamNombreSerie);
 
@@ -210,6 +242,8 @@ public class VentanaPrincipal extends JFrame {
 		}
 
 		public void focusLost(FocusEvent e) {
+			
+		
 			if(e.getSource() == textFieldDirectorio){
 				String path = textFieldDirectorio.getText();
 				//String path = "C:/Users/Rodrigo de Miguel/Desktop/Nueva carpeta";
@@ -244,13 +278,14 @@ public class VentanaPrincipal extends JFrame {
 				//Mostrar ejemplo
 				try{
 					num_nombre_serie = Integer.parseInt(textFieldTamNombreSerie.getText());
-					negocio.setParametros(num_nombre_serie, VentanaPrincipal.this.textFieldIndicadorFinal.getText(), VentanaPrincipal.this.textFielCalidad.getText(), VentanaPrincipal.this.textFieldIdioma.getText());
+					//obtencion de parametros e inicializacion de negocio
+					negocio.setParametros(num_nombre_serie, VentanaPrincipal.this.textFieldIndicadorFinal.getText(), VentanaPrincipal.this.textFielCalidad.getText(), VentanaPrincipal.this.textFieldIdioma.getText(), VentanaPrincipal.this.textFieldSeparadorPalabras.getText());
 				}catch (NumberFormatException e1){
 					JOptionPane.showMessageDialog(null, "Inserta un numero de palabras inicial!");
 					textFieldTamNombreSerie.requestFocus();
 				}
 				
-				negocio.setParametros(num_nombre_serie, VentanaPrincipal.this.textFieldIndicadorFinal.getText(), VentanaPrincipal.this.textFielCalidad.getText(), VentanaPrincipal.this.textFieldIdioma.getText());
+				negocio.setParametros(num_nombre_serie, VentanaPrincipal.this.textFieldIndicadorFinal.getText(), VentanaPrincipal.this.textFielCalidad.getText(), VentanaPrincipal.this.textFieldIdioma.getText(), VentanaPrincipal.this.textFieldSeparadorPalabras.getText());
 				textAreaEjemplo.setText(negocio.extraerNombreDeFichero(directorio.listFiles()[0]));
 			
 			}

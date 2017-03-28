@@ -11,10 +11,11 @@ public class Negocio {
 	
 	
 	
-	public int num_nombre_serie;
-	public String fin_nombre;
-	public String calidad;
-	public String idioma;
+	private int num_nombre_serie;
+	private String fin_nombre;
+	private String calidad;
+	private String idioma;
+	private String separador_palabras;
 
 	public void cambiarNombresFicheros(File directorio) {
 
@@ -79,7 +80,7 @@ public class Negocio {
 				fichero.getName().lastIndexOf(".") + 1);
 		System.out.println("Ext: " + extension);
 
-		String[] palabras_nombre = fichero.getName().split("_");
+		String[] palabras_nombre = fichero.getName().split(separador_palabras);
 		String nombreFinal = "";
 
 		// Creando nombre
@@ -142,12 +143,13 @@ public class Negocio {
 	}
 
 	public void setParametros(int num_nombre_serie, String fin_nombre,
-			String calidad, String idioma) {
+			String calidad, String idioma, String separador_palabras) {
 		
 		this.num_nombre_serie = num_nombre_serie;
 		this.fin_nombre = fin_nombre;
 		this.calidad = calidad;
 		this.idioma = idioma;
+		this.separador_palabras = separador_palabras;
 	}
 
 }
