@@ -1,8 +1,7 @@
 package Presentacion.Controlador;
 
-import Negocio.FactoriaRenombrador;
-import Negocio.Renombrador;
 import Negocio.TransferParametros;
+import Negocio.Factoria.FactoriaRenombrador;
 
 
 

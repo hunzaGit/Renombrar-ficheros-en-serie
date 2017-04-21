@@ -1,15 +1,13 @@
-package Negocio;
-
+package Negocio.ServiciosAplicacion;
 import java.io.File;
 
-import javax.swing.JTextField;
+import Negocio.TransferParametros;
 
 public class RenombradorTipo1 extends Renombrador {
 
 	private int num_nombre_serie;
 	private String fin_nombre;
 	private String separador_palabras;
-	private String sepapador_palabras_final;
 
 	public void cambiarNombresFicheros(TransferParametros param) {
 
@@ -92,12 +90,13 @@ public class RenombradorTipo1 extends Renombrador {
 				nombreFinal = nombreFinal + palabras_nombre[i] + " ";
 				i++;
 			}
-			nombreFinal = nombreFinal + sepapador_palabras_final + " ";
+			
+			nombreFinal = nombreFinal + separador_palabras_final + " ";
 			// Capitulo
 			nombreFinal = nombreFinal + palabras_nombre[i];
 			i++;
 
-			nombreFinal = nombreFinal + " " + sepapador_palabras_final + " ";
+			nombreFinal = nombreFinal + " " + separador_palabras_final + " ";
 
 			// Nombre del Capitulo
 			while (i < palabras_nombre.length && !fin) {

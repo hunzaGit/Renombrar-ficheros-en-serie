@@ -4,5 +4,10 @@ Programa para renombrar gran numero de ficheros. Por ahora destinado a nombres d
 Pendiente de mejoras.
 
 Mejoras futuras:
- - Más opciones para otros formatos de nombres
+ - Más opciones para otros formatos de nombres.
  - Posibilidad de renombrar fotos, con fecha y nombre.
+
+
+
+Versión 0.2:
+	- Añadida la opción de renombrar los fichero de series a mano

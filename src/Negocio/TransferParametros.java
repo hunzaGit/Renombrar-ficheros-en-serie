@@ -2,8 +2,6 @@ package Negocio;
 
 import java.io.File;
 
-import Presentacion.VentanaPrincipal;
-
 public class TransferParametros {
 
 	

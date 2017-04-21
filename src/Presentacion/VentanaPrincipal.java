@@ -1,14 +1,7 @@
 package Presentacion;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -16,24 +9,18 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.text.ParseException;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.border.Border;
 
-import Negocio.RenombradorTipo1;
 import Negocio.TransferParametros;
 import Presentacion.Controlador.Controlador;
 import Presentacion.Controlador.EventoGUI;
@@ -104,8 +91,7 @@ public class VentanaPrincipal extends JFrame {
 		panelDirectorioOpcion = new JPanel();
 		panelDirectorioOpcion.setBorder(BorderFactory
 				.createTitledBorder("Directorio"));
-		textFieldDirectorio = new JTextField(
-				"C:\\Users\\Rodrigo de Miguel\\workspace\\Pruebas", 45);
+		textFieldDirectorio = new JTextField(45);
 
 		/*
 		 * JFileChooser chooser = new JFileChooser();
@@ -401,6 +387,10 @@ public class VentanaPrincipal extends JFrame {
 				String nombreFichero = "";
 				if (comboEleccion.getSelectedItem().equals(
 						opciones.elementAt(0))) {
+					
+					
+					System.out.println("SEPARADOR EN VISTA: " + VentanaPrincipal.this.textFieldSeparadorFinal.getText());
+					
 					TransferParametros parametros = new TransferParametros(
 							num_nombre_serie,
 							VentanaPrincipal.this.textFieldIndicadorFinal
@@ -465,7 +455,6 @@ public class VentanaPrincipal extends JFrame {
 								.parseInt(textFieldTamNombreSerie.getText());
 					}
 					
-					// obtencion de parametros e inicializacion de negocio
 				} catch (NumberFormatException e1) {
 					JOptionPane.showMessageDialog(null,
 							"Inserta un numero de palabras inicial!");
@@ -481,7 +470,7 @@ public class VentanaPrincipal extends JFrame {
 							VentanaPrincipal.this.textFielCalidad.getText(),
 							VentanaPrincipal.this.textFieldIdioma.getText(),
 							VentanaPrincipal.this.textFieldSeparadorPalabras
-									.getText(), directorio.listFiles()[0],
+									.getText(), directorio,
 							VentanaPrincipal.this.textFieldSeparadorFinal
 									.getText(),
 							VentanaPrincipal.this.textFieldExtension.getText());

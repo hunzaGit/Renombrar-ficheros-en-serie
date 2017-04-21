@@ -1,5 +1,8 @@
-package Negocio;
+package Negocio.Factoria;
 
+import Negocio.ServiciosAplicacion.Renombrador;
+import Negocio.ServiciosAplicacion.RenombradorTipo1;
+import Negocio.ServiciosAplicacion.RenombradorTipo2;
 import Presentacion.Controlador.TipoRenombrador;
 
 public class FactoriaRenombrador {

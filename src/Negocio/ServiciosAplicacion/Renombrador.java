@@ -1,6 +1,9 @@
-package Negocio;
+package Negocio.ServiciosAplicacion;
 
 import java.io.File;
+
+import Negocio.TransferParametros;
+import Presentacion.VentanaPrincipal;
 
 public abstract class Renombrador {
 
@@ -31,7 +34,7 @@ public abstract class Renombrador {
 		this.calidad = param.getCalidad();
 		this.idioma = param.getIdioma();
 		this.separador_palabras_final = param.getSeparadorFinal();
-		
+				
 		this.extension = param.getExtension();
 	}
 	

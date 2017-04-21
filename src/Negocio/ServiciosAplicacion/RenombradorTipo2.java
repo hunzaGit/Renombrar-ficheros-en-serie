@@ -1,6 +1,7 @@
-package Negocio;
-
+package Negocio.ServiciosAplicacion;
 import java.io.File;
+
+import Negocio.TransferParametros;
 
 public class RenombradorTipo2 extends Renombrador {
 

@@ -1,7 +1,4 @@
 
-import java.io.File;
-import java.lang.Exception;
-
 import javax.swing.SwingUtilities;
 
 import Presentacion.VentanaPrincipal;
