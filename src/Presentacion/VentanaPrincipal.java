@@ -17,6 +17,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.text.ParseException;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -32,7 +33,11 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 
-import Negocio.Negocio;
+import Negocio.RenombradorTipo1;
+import Negocio.TransferParametros;
+import Presentacion.Controlador.Controlador;
+import Presentacion.Controlador.EventoGUI;
+import Presentacion.Controlador.TipoRenombrador;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -45,9 +50,9 @@ public class VentanaPrincipal extends JFrame {
 	private static final long serialVersionUID = 6260339989633298267L;
 	private JLabel labelDirectorio;
 	private JTextField textFieldDirectorio;
-	private JPanel panelDirectorio;
+	private JPanel panelDirectorioOpcion;
 	private JPanel panelDatos;
-	
+
 	private JLabel labelSeparadorPalabras;
 	private JTextField textFieldSeparadorPalabras;
 	private JLabel labelTamSerie;
@@ -59,7 +64,7 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel labelIndicadorFinal;
 	private JTextField textFieldIndicadorFinal;
 
-	private int tamTextFieldStandar = 7;
+	private int TAM_TEXTFIELDS_STANDAR = 7;
 	private JPanel panelNorte;
 	private JPanel panelCentral;
 	private JTextArea textAreaFicheros;
@@ -68,16 +73,24 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel panelBotones;
 	private JButton botonIniciar;
 
-	
-	
-	private Negocio negocio; 
 	private File directorio;
-	
+	private JPanel panelEleccion;
+	private JComboBox<String> comboEleccion;
+	private JLabel labelNombreSerie;
+	private JTextField textFieldNombreSerie;
+	private JLabel labelSeparadorFinal;
+	private JTextField textFieldSeparadorFinal;
+	private JPanel panelDatosComunes;
+	private JLabel labelNumTemporada;
+	private JTextField textFieldNumTemporada;
+	private JButton botonTest;
+	private Vector<String> opciones;
+	private JLabel labelExtension;
+	private JTextField textFieldExtension;
+
 	public VentanaPrincipal() {
 		super("Renombrar ficheros");
 
-		negocio = new Negocio();
-		
 		create();
 		agregarManejadoresDeEventos();
 
@@ -88,84 +101,72 @@ public class VentanaPrincipal extends JFrame {
 	public void create() {
 
 		// Panel de path
-		panelDirectorio = new JPanel();
-		panelDirectorio.setBorder(BorderFactory
+		panelDirectorioOpcion = new JPanel();
+		panelDirectorioOpcion.setBorder(BorderFactory
 				.createTitledBorder("Directorio"));
-		textFieldDirectorio = new JTextField(45);
+		textFieldDirectorio = new JTextField(
+				"C:\\Users\\Rodrigo de Miguel\\workspace\\Pruebas", 45);
 
-		/*JFileChooser chooser = new JFileChooser();
-	    chooser.setCurrentDirectory(new java.io.File("."));
-	    chooser.setDialogTitle("choosertitle");
-	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	    chooser.setAcceptAllFileFilterUsed(false);
+		/*
+		 * JFileChooser chooser = new JFileChooser();
+		 * chooser.setCurrentDirectory(new java.io.File("."));
+		 * chooser.setDialogTitle("choosertitle");
+		 * chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		 * chooser.setAcceptAllFileFilterUsed(false);
+		 * 
+		 * if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		 * System.out.println("getCurrentDirectory(): " +
+		 * chooser.getCurrentDirectory());
+		 * System.out.println("getSelectedFile() : " +
+		 * chooser.getSelectedFile()); } else {
+		 * System.out.println("No Selection "); }
+		 * 
+		 * 
+		 * panelDirectorio.add(chooser);
+		 */
 
-	    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-	      System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
-	      System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
-	    } else {
-	      System.out.println("No Selection ");
-	    }
-		
-		
-		panelDirectorio.add(chooser);
-		*/
+		panelDirectorioOpcion.add(textFieldDirectorio, BorderLayout.CENTER);
 
-		panelDirectorio.add(textFieldDirectorio);
-		
-		// Panel de datos necesario		
+		panelEleccion = new JPanel();
+		panelEleccion.setBorder(BorderFactory
+				.createTitledBorder("Tipo de nombre"));
+
+		opciones = new Vector<String>();
+		opciones.add("Nombre_serie_[TxCC]_Nombre_capitulo");
+		opciones.add("Poner nombre a mano");
+		comboEleccion = new JComboBox<String>(opciones);
+		panelDirectorioOpcion.add(comboEleccion, BorderLayout.CENTER);
+
+		// Panel de datos necesario
 		panelDatos = new JPanel();
 		panelDatos.setBorder(BorderFactory.createTitledBorder("Datos"));
-		
-		labelSeparadorPalabras = new JLabel("Separador de palabras");
-		textFieldSeparadorPalabras = new JTextField(tamTextFieldStandar);
 
-		labelTamSerie = new JLabel("Tam primer nombre");
-		textFieldTamNombreSerie = new JTextField(tamTextFieldStandar);
-		
-		labelCalidad = new JLabel("Calidad: ");
-		textFielCalidad = new JTextField("1080p", tamTextFieldStandar);
+		crearComponentesOpcion1();
+		crearcomponentesOpcion2();
 
-		labelIdioma = new JLabel("Idioma: ");
-		textFieldIdioma = new JTextField("Dual", tamTextFieldStandar);
+		añadirComponentes();
 
-		labelIndicadorFinal = new JLabel("Indicador de final: ");
-		textFieldIndicadorFinal = new JTextField(tamTextFieldStandar);
-
-		panelDatos.add(labelSeparadorPalabras);
-		panelDatos.add(textFieldSeparadorPalabras);
-		
-		panelDatos.add(labelTamSerie);
-		panelDatos.add(textFieldTamNombreSerie);
-
-		panelDatos.add(labelCalidad);
-		panelDatos.add(textFielCalidad);
-
-		panelDatos.add(labelIdioma);
-		panelDatos.add(textFieldIdioma);
-
-		panelDatos.add(labelIndicadorFinal);
-		panelDatos.add(textFieldIndicadorFinal);
-
-
+		crearPanelDatosComunes();
 
 		// Panel central
 		// Panel Ejemplo resultado
 		panelEjemploResultado = new JPanel();
-		panelEjemploResultado.setBorder(BorderFactory.createTitledBorder("Resultado final de nombre fichero"));
-		
+		panelEjemploResultado.setBorder(BorderFactory
+				.createTitledBorder("Resultado final de nombre fichero"));
+
 		textAreaEjemplo = new JTextArea(1, 50);
-		textAreaEjemplo.setBorder(BorderFactory.createTitledBorder("Ficheros encontrados"));
+		textAreaEjemplo.setBorder(BorderFactory
+				.createTitledBorder("Ficheros encontrados"));
 		textAreaEjemplo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		panelEjemploResultado.add(textAreaEjemplo);
-		
+
 		panelEjemploResultado.add(textAreaEjemplo);
-		
-		
+
 		panelNorte = new JPanel(new BorderLayout());
-		panelNorte.add(panelDirectorio, BorderLayout.NORTH);
-		panelNorte.add(panelDatos, BorderLayout.CENTER);
-		
-		
+		panelNorte.add(panelDirectorioOpcion, BorderLayout.NORTH);
+		panelNorte.add(panelDatosComunes, BorderLayout.CENTER);
+		panelNorte.add(panelDatos, BorderLayout.SOUTH);
+
 		panelCentral = new JPanel(new BorderLayout());
 
 		// Text area ficheros
@@ -173,26 +174,20 @@ public class VentanaPrincipal extends JFrame {
 		textAreaFicheros.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		textAreaFicheros.setEditable(false);
 		panelCentral.add(textAreaFicheros);
-		
-		
-		panelCentral.add(panelEjemploResultado, BorderLayout.SOUTH);
-		
 
-		
-		
-		//panel sur
-		
+		panelCentral.add(panelEjemploResultado, BorderLayout.SOUTH);
+
+		// panel sur
+
 		panelBotones = new JPanel();
 		panelBotones.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		
-		
+
+		botonTest = new JButton("Test");
+		panelBotones.add(botonTest);
+
 		botonIniciar = new JButton("Iniciar");
-		
 		panelBotones.add(botonIniciar);
-		
-		
-		
-		
+
 		// Agregar paneles A la ventana
 		this.add(panelNorte, BorderLayout.NORTH);
 		this.add(panelCentral, BorderLayout.CENTER);
@@ -204,36 +199,152 @@ public class VentanaPrincipal extends JFrame {
 		pack();
 	}
 
+	private void añadirComponentes() {
+		panelDatos.add(labelNombreSerie);
+		panelDatos.add(textFieldNombreSerie);
+
+		panelDatos.add(labelNumTemporada);
+		panelDatos.add(textFieldNumTemporada);
+
+		panelDatos.add(labelSeparadorPalabras);
+		panelDatos.add(textFieldSeparadorPalabras);
+
+		panelDatos.add(labelTamSerie);
+		panelDatos.add(textFieldTamNombreSerie);
+
+		panelDatos.add(labelIndicadorFinal);
+		panelDatos.add(textFieldIndicadorFinal);
+
+		panelDatos.add(labelSeparadorFinal);
+		panelDatos.add(textFieldSeparadorFinal);
+	}
+
+	private void crearPanelDatosComunes() {
+
+		panelDatosComunes = new JPanel();
+		panelDatosComunes.setBorder(BorderFactory
+				.createTitledBorder("Datos comunes"));
+
+		labelCalidad = new JLabel("Calidad: ");
+		textFielCalidad = new JTextField("1080p", TAM_TEXTFIELDS_STANDAR);
+		panelDatosComunes.add(labelCalidad);
+		panelDatosComunes.add(textFielCalidad);
+
+		labelIdioma = new JLabel("Idioma: ");
+		textFieldIdioma = new JTextField("Dual", TAM_TEXTFIELDS_STANDAR);
+		panelDatosComunes.add(labelIdioma);
+		panelDatosComunes.add(textFieldIdioma);
+
+		labelExtension = new JLabel("Extensión: ");
+		textFieldExtension = new JTextField("mkv", TAM_TEXTFIELDS_STANDAR);
+		panelDatosComunes.add(labelExtension);
+		panelDatosComunes.add(textFieldExtension);
+
+	}
+
+	private void crearcomponentesOpcion2() {
+
+		(labelNombreSerie = new JLabel("Nombre serie")).setVisible(false);
+
+		(textFieldNombreSerie = new JTextField(TAM_TEXTFIELDS_STANDAR))
+				.setVisible(false);
+
+		panelDatos.add(labelNombreSerie);
+		panelDatos.add(textFieldNombreSerie);
+
+		(labelNumTemporada = new JLabel("Número temporada")).setVisible(false);
+
+		(textFieldNumTemporada = new JTextField(TAM_TEXTFIELDS_STANDAR))
+				.setVisible(false);
+
+	}
+
+	private void crearComponentesOpcion1() {
+
+		labelSeparadorPalabras = new JLabel("Separador de palabras");
+		textFieldSeparadorPalabras = new JTextField(TAM_TEXTFIELDS_STANDAR);
+		panelDatos.add(labelSeparadorPalabras);
+		panelDatos.add(textFieldSeparadorPalabras);
+
+		labelTamSerie = new JLabel("Tam primer nombre");
+		textFieldTamNombreSerie = new JTextField(TAM_TEXTFIELDS_STANDAR);
+		panelDatos.add(labelTamSerie);
+		panelDatos.add(textFieldTamNombreSerie);
+
+		labelIndicadorFinal = new JLabel("Indicador de final: ");
+		textFieldIndicadorFinal = new JTextField(TAM_TEXTFIELDS_STANDAR);
+		panelDatos.add(labelIndicadorFinal);
+		panelDatos.add(textFieldIndicadorFinal);
+
+		labelSeparadorFinal = new JLabel("Separador final");
+		textFieldSeparadorFinal = new JTextField(TAM_TEXTFIELDS_STANDAR);
+		panelDatos.add(labelSeparadorFinal);
+		panelDatos.add(textFieldSeparadorFinal);
+
+	}
+
 	private void agregarManejadoresDeEventos() {
-		ALVentanaMostrarProfesor oyente = new ALVentanaMostrarProfesor();
+		ALVentanaPrincipal oyente = new ALVentanaPrincipal();
 		FLVentanaCrearProfesor oyenteFocus = new FLVentanaCrearProfesor();
 
 		textFieldDirectorio.addFocusListener(oyenteFocus);
-		textFieldIndicadorFinal.addFocusListener(oyenteFocus);
-		
+		textFieldSeparadorFinal.addFocusListener(oyenteFocus);
 		botonIniciar.addActionListener(oyente);
+		botonTest.addActionListener(oyente);
+		comboEleccion.addActionListener(oyente);
+
+		textFieldExtension.addFocusListener(oyenteFocus);
 
 		this.addWindowListener(new WLVentanaMostrarProfesor());
 	}
 
-	
 	private void rellenarAreaFicheros(File dir) {
 		textAreaFicheros.setText("");
-		
-		
+
 		directorio = dir;
 		String[] nombre_ficheros = dir.list();
-		for (String nom : nombre_ficheros)
-			textAreaFicheros.append(" - " + nom + System.getProperty("line.separator"));
-		
-	}
-	
-	
-	
-	
-	
-	public class FLVentanaCrearProfesor implements FocusListener {
 
+		if (!VentanaPrincipal.this.textFieldExtension.getText().equals("")) {
+			for (String nom : nombre_ficheros) {
+				String extension = nom.substring(nom.lastIndexOf(".") + 1);
+				if (extension
+						.equalsIgnoreCase(VentanaPrincipal.this.textFieldExtension
+								.getText())) {
+					textAreaFicheros.append(" - " + nom
+							+ System.getProperty("line.separator"));
+				}
+
+			}
+		} else {
+			for (String nom : nombre_ficheros)
+				textAreaFicheros.append(" - " + nom
+						+ System.getProperty("line.separator"));
+		}
+
+	}
+
+	private void ocultarElementos() {
+		labelSeparadorPalabras.setVisible(false);
+		textFieldSeparadorPalabras.setVisible(false);
+		labelTamSerie.setVisible(false);
+		textFieldTamNombreSerie.setVisible(false);
+		// labelCalidad.setVisible(false);
+		// textFielCalidad.setVisible(false);
+		// labelIdioma.setVisible(false);
+		// textFieldIdioma.setVisible(false);
+		labelIndicadorFinal.setVisible(false);
+		textFieldIndicadorFinal.setVisible(false);
+
+		labelNombreSerie.setVisible(false);
+		textFieldNombreSerie.setVisible(false);
+		labelSeparadorFinal.setVisible(false);
+		textFieldSeparadorFinal.setVisible(false);
+		labelNumTemporada.setVisible(false);
+		textFieldNumTemporada.setVisible(false);
+
+	}
+
+	public class FLVentanaCrearProfesor implements FocusListener {
 
 		public void focusGained(FocusEvent e) {
 
@@ -242,66 +353,203 @@ public class VentanaPrincipal extends JFrame {
 		}
 
 		public void focusLost(FocusEvent e) {
-			
-		
-			if(e.getSource() == textFieldDirectorio){
+
+			if (e.getSource() == textFieldExtension) {
 				String path = textFieldDirectorio.getText();
-				//String path = "C:/Users/Rodrigo de Miguel/Desktop/Nueva carpeta";
-				//textFieldDirectorio.setText(path);
-				//textFieldTamNombreSerie.setText("3");
-				//textFieldIndicadorFinal.setText("1080p");
-				
-				if(!path.equalsIgnoreCase("")){
-					
+				File dir = new File(path);
+				rellenarAreaFicheros(dir);
+			}
+
+			if (e.getSource() == textFieldDirectorio) {
+				String path = textFieldDirectorio.getText();
+
+				if (!path.equalsIgnoreCase("")) {
+
 					File dir = new File(path);
-					
-					if(dir.exists()){
-						
+
+					if (dir.exists()) {
 						rellenarAreaFicheros(dir);
-					
-					}else{
-						JOptionPane.showMessageDialog(null, "No existe ese directorio!");
-						textFieldDirectorio.requestFocus();
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"El directorio no existe!");
 					}
 
-				}else{
+				} else {
 					JOptionPane.showMessageDialog(null, "Ruta vacia!");
 					textFieldDirectorio.requestFocus();
 				}
 			}
-			
-			
-			if(e.getSource() == textFieldIndicadorFinal){
-				int num_nombre_serie = 0 ;
+
+			if (e.getSource() == textFieldSeparadorFinal) {
+				int num_nombre_serie = 0;
 				textAreaEjemplo.setText("");
-				
-				//Mostrar ejemplo
-				try{
-					num_nombre_serie = Integer.parseInt(textFieldTamNombreSerie.getText());
-					//obtencion de parametros e inicializacion de negocio
-					negocio.setParametros(num_nombre_serie, VentanaPrincipal.this.textFieldIndicadorFinal.getText(), VentanaPrincipal.this.textFielCalidad.getText(), VentanaPrincipal.this.textFieldIdioma.getText(), VentanaPrincipal.this.textFieldSeparadorPalabras.getText());
-				}catch (NumberFormatException e1){
-					JOptionPane.showMessageDialog(null, "Inserta un numero de palabras inicial!");
+
+				// Mostrar ejemplo
+				try {
+
+					if (((String) comboEleccion.getSelectedItem()).equalsIgnoreCase(opciones.elementAt(0))) {
+						num_nombre_serie = Integer
+								.parseInt(textFieldTamNombreSerie.getText());
+					}
+
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Inserta un numero de palabras inicial!");
 					textFieldTamNombreSerie.requestFocus();
 				}
-				
-				negocio.setParametros(num_nombre_serie, VentanaPrincipal.this.textFieldIndicadorFinal.getText(), VentanaPrincipal.this.textFielCalidad.getText(), VentanaPrincipal.this.textFieldIdioma.getText(), VentanaPrincipal.this.textFieldSeparadorPalabras.getText());
-				textAreaEjemplo.setText(negocio.extraerNombreDeFichero(directorio.listFiles()[0]));
-			
+
+				String nombreFichero = "";
+				if (comboEleccion.getSelectedItem().equals(
+						opciones.elementAt(0))) {
+					TransferParametros parametros = new TransferParametros(
+							num_nombre_serie,
+							VentanaPrincipal.this.textFieldIndicadorFinal
+									.getText(),
+							VentanaPrincipal.this.textFielCalidad.getText(),
+							VentanaPrincipal.this.textFieldIdioma.getText(),
+							VentanaPrincipal.this.textFieldSeparadorPalabras
+									.getText(), directorio,
+							VentanaPrincipal.this.textFieldSeparadorFinal
+									.getText(),
+							VentanaPrincipal.this.textFieldExtension.getText());
+
+					nombreFichero = (String) Controlador.getInstance().action(
+							EventoGUI.EXTRAER_NOMBRE_FICHERO,
+							TipoRenombrador.NOMBRESERIE_TxCC_NOMBRECAPITULO,
+							parametros);
+
+				} else if (comboEleccion.getSelectedItem().equals(
+						opciones.elementAt(1))) {
+
+					TransferParametros parametros = new TransferParametros(
+							directorio,
+							VentanaPrincipal.this.textFielCalidad.getText(),
+							VentanaPrincipal.this.textFieldIdioma.getText(),
+							VentanaPrincipal.this.textFieldSeparadorFinal
+									.getText(),
+							VentanaPrincipal.this.textFieldNombreSerie
+									.getText(),
+							VentanaPrincipal.this.textFieldNumTemporada
+									.getText(),
+							VentanaPrincipal.this.textFieldExtension.getText());
+
+					nombreFichero = (String) Controlador.getInstance().action(
+							EventoGUI.EXTRAER_NOMBRE_FICHERO,
+							TipoRenombrador.RENOMBRAR_A_MANO, parametros);
+
+					textAreaEjemplo.setText(nombreFichero);
+
+				}
+
+				textAreaEjemplo.setText(nombreFichero);
+
 			}
 		}
 
-
 	}
 
-	public class ALVentanaMostrarProfesor implements ActionListener {
+	public class ALVentanaPrincipal implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			
-			if (e.getSource() == botonIniciar){
-				negocio.cambiarNombresFicheros(VentanaPrincipal.this.directorio);
+
+			if (e.getSource() == botonIniciar) {
+
+				int num_nombre_serie = 0;
+				textAreaEjemplo.setText("");
+
+				// Mostrar ejemplo
+				try {
+					
+					if (((String) comboEleccion.getSelectedItem()).equalsIgnoreCase(opciones.elementAt(0))) {
+						num_nombre_serie = Integer
+								.parseInt(textFieldTamNombreSerie.getText());
+					}
+					
+					// obtencion de parametros e inicializacion de negocio
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null,
+							"Inserta un numero de palabras inicial!");
+					textFieldTamNombreSerie.requestFocus();
+				}
+
+				if (comboEleccion.getSelectedItem().equals(
+						opciones.elementAt(0))) {
+					TransferParametros parametros = new TransferParametros(
+							num_nombre_serie,
+							VentanaPrincipal.this.textFieldIndicadorFinal
+									.getText(),
+							VentanaPrincipal.this.textFielCalidad.getText(),
+							VentanaPrincipal.this.textFieldIdioma.getText(),
+							VentanaPrincipal.this.textFieldSeparadorPalabras
+									.getText(), directorio.listFiles()[0],
+							VentanaPrincipal.this.textFieldSeparadorFinal
+									.getText(),
+							VentanaPrincipal.this.textFieldExtension.getText());
+
+					Controlador.getInstance().action(
+							EventoGUI.CAMBIAR_NOMBRE_FICHERO,
+							TipoRenombrador.NOMBRESERIE_TxCC_NOMBRECAPITULO,
+							parametros);
+				}else if (comboEleccion.getSelectedItem().equals(
+						opciones.elementAt(1))) {
+					
+					TransferParametros parametros = new TransferParametros(
+							directorio,
+							VentanaPrincipal.this.textFielCalidad.getText(),
+							VentanaPrincipal.this.textFieldIdioma.getText(),
+							VentanaPrincipal.this.textFieldSeparadorFinal
+									.getText(),
+							VentanaPrincipal.this.textFieldNombreSerie
+									.getText(),
+							VentanaPrincipal.this.textFieldNumTemporada
+									.getText(),
+							VentanaPrincipal.this.textFieldExtension.getText());
+
+					Controlador.getInstance().action(
+							EventoGUI.CAMBIAR_NOMBRE_FICHERO,
+							TipoRenombrador.RENOMBRAR_A_MANO,
+							parametros);
+				}
+				
+				
+				
 				JOptionPane.showMessageDialog(null, "Ficheros renombrados!");
 				VentanaPrincipal.this.rellenarAreaFicheros(directorio);
+			}
+
+			if (e.getSource() == comboEleccion) {
+				if (comboEleccion.getSelectedItem().equals(
+						opciones.elementAt(0))) {
+					ocultarElementos();
+					labelSeparadorPalabras.setVisible(true);
+					textFieldSeparadorPalabras.setVisible(true);
+
+					labelIndicadorFinal.setVisible(true);
+					textFieldIndicadorFinal.setVisible(true);
+
+					labelTamSerie.setVisible(true);
+					textFieldTamNombreSerie.setVisible(true);
+					
+					labelSeparadorFinal.setVisible(true);
+					textFieldSeparadorFinal.setVisible(true);
+
+				}
+
+				if (comboEleccion.getSelectedItem().equals(
+						opciones.elementAt(1))) {
+					ocultarElementos();
+
+					labelSeparadorFinal.setVisible(true);
+					textFieldSeparadorFinal.setVisible(true);
+
+					labelNombreSerie.setVisible(true);
+					textFieldNombreSerie.setVisible(true);
+
+					labelNumTemporada.setVisible(true);
+					textFieldNumTemporada.setVisible(true);
+
+				}
+
 			}
 
 		}

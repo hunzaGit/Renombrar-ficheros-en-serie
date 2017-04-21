@@ -4,21 +4,16 @@ import java.io.File;
 
 import javax.swing.JTextField;
 
-public class Negocio {
+public class RenombradorTipo1 extends Renombrador {
 
-	
-	// Proxima modificacion --> "Ncrs108720p [www.newpct1.com].mkv" --> "Narcos - 1x08 - [Dual 720p].mkv"
-	
-	
-	
 	private int num_nombre_serie;
 	private String fin_nombre;
-	private String calidad;
-	private String idioma;
 	private String separador_palabras;
+	private String sepapador_palabras_final;
 
-	public void cambiarNombresFicheros(File directorio) {
+	public void cambiarNombresFicheros(TransferParametros param) {
 
+		setParametros(param);
 		boolean fin = false;
 
 		// serie_3x45_nombre_capitulo_1080p
@@ -42,43 +37,49 @@ public class Negocio {
 		else {
 			for (File fichero : ficheros) {
 
-				// Nombre
-				System.out.println("Procesando fichero: " + fichero.getName());
+				String extension = fichero.getName().substring(
+						fichero.getName().lastIndexOf(".") + 1);
 
-				String nombre_final_fichero = extraerNombreDeFichero(fichero);
+				if (extension.equalsIgnoreCase(extension)) {
+					// Nombre
+					System.out.println("Procesando fichero: "
+							+ fichero.getName());
 
-				// Renombrando fichero
-				System.out.println("Renombrando Fichero...****");
+					String nombre_final_fichero = extraerNombreDeFichero(
+							fichero, -1);
 
-				if (!renombrarFichero(fichero, nombre_final_fichero)) {
-					System.out.println("Error intentando cambiar el nombre de fichero");
-				} else {
-					System.out.println("nombre cambiado!");
+					// Renombrando fichero
+					System.out.println("Renombrando Fichero...****");
+
+					if (!renombrarFichero(fichero, nombre_final_fichero)) {
+						System.out
+								.println("Error intentando cambiar el nombre de fichero");
+					} else {
+						System.out.println("nombre cambiado!");
+					}
+
+					System.out.println("-------------------------");
+
 				}
-
-				System.out.println("-------------------------");
-
 			}
 
 		}
 
 	}
 
-	public boolean renombrarFichero(File fichero, String nombre_nuevo) {
-		File parent = fichero.getParentFile();
+	public String extraerNombreDeFichero(TransferParametros param, int numero) {
+		setParametros(param);
 
-		boolean flag = fichero.renameTo(new File(parent, nombre_nuevo));
-
-		return flag;
+		return extraerNombreDeFichero(param.getDirectorio().listFiles()[0],
+				numero);
 	}
 
-	public String extraerNombreDeFichero(File fichero) {
-
+	private String extraerNombreDeFichero(File fichero, int numero) {
 		boolean fin = false;
 
 		String extension = fichero.getName().substring(
 				fichero.getName().lastIndexOf(".") + 1);
-		System.out.println("Ext: " + extension);
+		// System.out.println("Ext: " + extension);
 
 		String[] palabras_nombre = fichero.getName().split(separador_palabras);
 		String nombreFinal = "";
@@ -91,12 +92,12 @@ public class Negocio {
 				nombreFinal = nombreFinal + palabras_nombre[i] + " ";
 				i++;
 			}
-			nombreFinal = nombreFinal + "- ";
+			nombreFinal = nombreFinal + sepapador_palabras_final + " ";
 			// Capitulo
 			nombreFinal = nombreFinal + palabras_nombre[i];
 			i++;
 
-			nombreFinal = nombreFinal + " - ";
+			nombreFinal = nombreFinal + " " + sepapador_palabras_final + " ";
 
 			// Nombre del Capitulo
 			while (i < palabras_nombre.length && !fin) {
@@ -136,20 +137,19 @@ public class Negocio {
 		nombreFinal = nombreFinal + "[" + idioma + " " + calidad + "]."
 				+ extension;
 
-		System.out.println("Nombre final: " + nombreFinal);
+		// System.out.println("Nombre final: " + nombreFinal);
 
 		return nombreFinal;
 
 	}
 
-	public void setParametros(int num_nombre_serie, String fin_nombre,
-			String calidad, String idioma, String separador_palabras) {
-		
-		this.num_nombre_serie = num_nombre_serie;
-		this.fin_nombre = fin_nombre;
-		this.calidad = calidad;
-		this.idioma = idioma;
-		this.separador_palabras = separador_palabras;
+	@Override
+	public void setParametros(TransferParametros param) {
+		super.setParametros(param);
+		this.num_nombre_serie = param.getNum_nombre_serie();
+		this.fin_nombre = param.getIndicadorFinal();
+
+		this.separador_palabras = param.getSeparadorPalabras();
 	}
 
 }
