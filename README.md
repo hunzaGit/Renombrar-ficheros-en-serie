@@ -10,4 +10,4 @@ Mejoras futuras:
 
 
 Versión 0.2:
-	- Añadida la opción de renombrar los fichero de series a mano
+ - Añadida la opción de renombrar los fichero de series a mano
