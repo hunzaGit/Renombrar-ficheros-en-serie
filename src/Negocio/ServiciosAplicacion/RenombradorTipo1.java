@@ -86,17 +86,19 @@ public class RenombradorTipo1 extends Renombrador {
 		for (int i = 0; i < palabras_nombre.length && !fin; i++) {
 
 			// nombre serie
-			while (i < num_nombre_serie) {
+			while (i < num_nombre_serie-1) {
 				nombreFinal = nombreFinal + palabras_nombre[i] + " ";
 				i++;
 			}
+			nombreFinal = nombreFinal + palabras_nombre[i] + "";
+			i++;
 			
-			nombreFinal = nombreFinal + separador_palabras_final + " ";
-			// Capitulo
+			nombreFinal = nombreFinal + separador_palabras_final + "";
+			// Numero de capitulo
 			nombreFinal = nombreFinal + palabras_nombre[i];
 			i++;
 
-			nombreFinal = nombreFinal + " " + separador_palabras_final + " ";
+			nombreFinal = nombreFinal + "" + separador_palabras_final + "";
 
 			// Nombre del Capitulo
 			while (i < palabras_nombre.length && !fin) {
